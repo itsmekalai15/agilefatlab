@@ -1,12 +1,11 @@
-# Step 1: Build the JAR using Maven
+# Use a multi-stage build for efficiency
 FROM maven:3.8.4-openjdk-11-slim AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Step 2: Create the final image
 FROM openjdk:11-jre-slim
 WORKDIR /app
-# Copies the JAR created in the build stage
+# Note: Ensure the JAR name matches your pom.xml artifactId
 COPY --from=build /app/target/matrix-app-1.0-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
